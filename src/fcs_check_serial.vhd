@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use std.textio.all;
 
 entity fcs_check_serial is
   port (clk            : in  std_logic;   -- system clock
@@ -41,7 +42,7 @@ begin
   process(end_of_frame)
   begin
     -- if (unsigned(R) = 0) and end_of_frame then
-    --   fcs_error <= 1;
+    --   fcs_error <= '1';
     -- end if;
   end process;
 end behavioral;

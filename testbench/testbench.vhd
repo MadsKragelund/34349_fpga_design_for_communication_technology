@@ -6,12 +6,12 @@ entity testbench is
 end testbench;
 
 architecture structure of testbench is
-  component fcs_clock
+  component clock
     generic (period :     time      := 10 ns);
     port (clk       : out std_logic := '0');
   end component;
 
-  component env
+  component environment
     port (clk   : in  std_logic;              -- The clock signal.
           reset : in  std_logic;              -- Reset the module.
           req   : out std_logic;              -- Start computation.
@@ -36,13 +36,13 @@ begin
   -- assert reset, note that reset is active high
   reset <= '1', '0' after 110 ns;
 
-  clock_gen : clock
+  i_clock_1 : clock
     port map (clk);
 
-  environment : env
+  i_environment_1 : environment
     port map (clk, reset, req, AB, ack, C);
 
-  GCD_module : GCD_sys
+  i_fcs_check_serial_1 : fcs_check_serial
     port map (clk, reset, req, AB, ack, C);
 
 end structure;
