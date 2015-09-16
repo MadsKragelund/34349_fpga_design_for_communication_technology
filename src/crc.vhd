@@ -8,3 +8,18 @@ entity fcs_check_serial is
     fcs_error      : out std_logic     -- indicates an error.
     );
 end fcs_check_serial;
+
+architecture behavioral of fcs_check_serial is
+begin
+  process(start_of_frame)
+  begin
+
+  end
+
+  process(end_of_frame)
+  begin
+    if (unsigned(R) = 0) and end_of_frame then
+      fcs_error = 1;
+    end;
+  end
+end behavioral;
