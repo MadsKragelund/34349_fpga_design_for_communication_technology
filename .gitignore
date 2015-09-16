@@ -1,0 +1,3 @@
+src/*.cf
+src/*.o
+src/fcs_check_serial
