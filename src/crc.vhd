@@ -10,6 +10,7 @@ entity fcs_check_serial is
 end fcs_check_serial;
 
 architecture behavioral of fcs_check_serial is
+  signal R : std_logic_vector(31 downto 0);
 begin
   process(start_of_frame)
   begin
