@@ -15,6 +15,8 @@ end fcs_check_serial;
 architecture behavioral of fcs_check_serial is
   -- 32 bit shift register filled with 0's
   signal R : std_logic_vector(31 downto 0) := (others => '0');
+  -- Previous output from the shift register
+  signal previous_output : std_logic_vector(1 downto 0) := (others => '0');
 begin
   -- Arrival of the first bit, and start of the shift register
   process(start_of_frame, clk, reset)
@@ -24,8 +26,14 @@ begin
       R <= (others => '0');
     else
       if rising_edge(clk) then
-        -- Shift the vector and xor it with the last bit in the vector
-        R <= (R(R'LENGTH - 2 downto 0) & data_in) xor R(R'LENGTH-1);
+        -- Shift the vector
+        R_temp := R(R'LENGTH - 2 downto 0) & data_in;
+        -- xor it with the last bit in the vector
+        for i in R'RANGE loop
+          R_temp(i) := R_temp(i) xor previous_output(0);
+        end loop;
+        R <= R_temp;
+        previous_output <= R(R'LENGTH - 1);
       end if;
     end if;
   end process;
