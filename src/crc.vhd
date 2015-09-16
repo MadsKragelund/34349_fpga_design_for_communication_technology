@@ -31,16 +31,16 @@ begin
         for i in R'range loop
           R_temp(i) := R_temp(i) xor previous_output(0);
         end loop;
-        R               <= R_temp;
-        previous_output <= R(R'length - 1);
+        R                  <= R_temp;
+        previous_output(0) <= R(R'length - 1);
       end if;
     end if;
   end process;
   -- All data has been received, and we can now check for errors
   process(end_of_frame)
   begin
-    if (unsigned(R) = 0) and end_of_frame then
-      fcs_error <= 1;
-    end if;
+    -- if (unsigned(R) = 0) and end_of_frame then
+    --   fcs_error <= 1;
+    -- end if;
   end process;
 end behavioral;
