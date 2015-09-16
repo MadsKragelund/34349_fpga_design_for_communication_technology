@@ -1,3 +1,6 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
 entity fcs_check_serial is
   port (
     clk            : in  std_logic;     -- system clock
@@ -21,12 +24,8 @@ begin
       R <= (others => '0');
     else
       if rising_edge(clk) then
-        -- Loop through the shift register, skipping the first value, since that
-        -- is different
-
-        for i in (R'length - 1) downto 1 loop
-        -- Shift the register
-        end loop;
+        -- Shift the vector and xor it with the last bit in the vector
+        R <= (R(R'LENGTH - 2 downto 0) & data_in) xor R(R'LENGTH-1);
       end if;
     end if;
   end process;
