@@ -18,23 +18,23 @@ begin
   begin
     if reset = '1' then
       -- Reset the shift register and fill it with 0's
-			R <= (others => '0');
-		else
-			if rising_edge(clk) then
+      R <= (others => '0');
+    else
+      if rising_edge(clk) then
         -- Loop through the shift register, skipping the first value, since that
         -- is different
-        
-        for i in (R'LENGTH - 1) downto 1 loop
-          -- Shift the register
+
+        for i in (R'length - 1) downto 1 loop
+        -- Shift the register
         end loop;
-			end if;
-		end if;
-  end
+      end if;
+    end if;
+  end process;
   -- All data has been received, and we can now check for errors
   process(end_of_frame)
   begin
     if (unsigned(R) = 0) and end_of_frame then
       fcs_error <= 1;
     end;
-  end
+  end process;
 end behavioral;
