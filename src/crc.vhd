@@ -41,6 +41,6 @@ begin
   begin
     if (unsigned(R) = 0) and end_of_frame then
       fcs_error <= 1;
-    end;
-    end process;
-    end behavioral;
+    end if;
+  end process;
+end behavioral;
