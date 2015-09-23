@@ -20,7 +20,7 @@ begin
   -- Arrival of the first bit, and start of the shift register
   process(start_of_frame, clk, reset)
     variable R_temp : std_logic_vector(31 downto 0) := (others => '0');
-    variable l : line;
+    variable l      : line;
   begin
     if reset = '1' then
       -- Reset the shift register and fill it with 0's
@@ -41,8 +41,8 @@ begin
   -- All data has been received, and we can now check for errors
   process(end_of_frame)
   begin
-    -- if (unsigned(R) = 0) and end_of_frame then
-    --   fcs_error <= '1';
-    -- end if;
+  -- if (unsigned(R) = 0) and end_of_frame then
+  --   fcs_error <= '1';
+  -- end if;
   end process;
 end behavioral;
