@@ -1,6 +1,6 @@
 vlib work
 
-vcom -93 -explicit -work work fcs_check_serial_test.vhd
+vcom -93 -explicit -work work ../src/fcs_check_serial_test.vhd
 vsim fcs_check_serial_test
 
 view structure
@@ -14,6 +14,13 @@ add wave reset
 add wave start_of_frame
 add wave end_of_frame
 add wave data_in
+
+add wave -noupdate -divider -height 32 Outputs
+add wave uut/R
+add wave uut/state
+add wave uut/shift_count
+add wave uut/complement_enable
+
 add wave -noupdate -divider -height 32 Outputs
 add wave fcs_error
 
