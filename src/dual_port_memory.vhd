@@ -14,9 +14,10 @@ entity dual_port_memory is
 		wen				: in std_logic;
 		write_data_in  : in std_logic_vector(7 downto 0);
 		read_data_out  : out std_logic_vector(7 downto 0)
-);
+	);
 end dual_port_memory;
 
 architecture arch of dual_port_memory is
-  -- do something
+begin
+
 end arch;

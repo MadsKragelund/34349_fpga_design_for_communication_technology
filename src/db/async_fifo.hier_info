@@ -1,0 +1,124 @@
+|async_fifo
+reset => fifo_control:fwc.reset
+reset => fifo_control:frc.reset
+wclk => fifo_control:fwc.clk
+wclk => sync_control:ws.clk
+wclk => dual_port_memory:dpm.wclk
+rclk => fifo_control:frc.clk
+rclk => sync_control:rs.clk
+rclk => dual_port_memory:dpm.rclk
+write_enable => fifo_control:fwc.enable
+read_enable => fifo_control:frc.enable
+fifo_occu_in[0] <= fifo_control:fwc.fifo_occu[0]
+fifo_occu_in[1] <= fifo_control:fwc.fifo_occu[1]
+fifo_occu_in[2] <= fifo_control:fwc.fifo_occu[2]
+fifo_occu_in[3] <= fifo_control:fwc.fifo_occu[3]
+fifo_occu_in[4] <= fifo_control:fwc.fifo_occu[4]
+fifo_occu_out[0] <= fifo_control:frc.fifo_occu[0]
+fifo_occu_out[1] <= fifo_control:frc.fifo_occu[1]
+fifo_occu_out[2] <= fifo_control:frc.fifo_occu[2]
+fifo_occu_out[3] <= fifo_control:frc.fifo_occu[3]
+fifo_occu_out[4] <= fifo_control:frc.fifo_occu[4]
+write_data_in[0] => dual_port_memory:dpm.write_data_in[0]
+write_data_in[1] => dual_port_memory:dpm.write_data_in[1]
+write_data_in[2] => dual_port_memory:dpm.write_data_in[2]
+write_data_in[3] => dual_port_memory:dpm.write_data_in[3]
+write_data_in[4] => dual_port_memory:dpm.write_data_in[4]
+write_data_in[5] => dual_port_memory:dpm.write_data_in[5]
+write_data_in[6] => dual_port_memory:dpm.write_data_in[6]
+write_data_in[7] => dual_port_memory:dpm.write_data_in[7]
+read_data_out[0] <= dual_port_memory:dpm.read_data_out[0]
+read_data_out[1] <= dual_port_memory:dpm.read_data_out[1]
+read_data_out[2] <= dual_port_memory:dpm.read_data_out[2]
+read_data_out[3] <= dual_port_memory:dpm.read_data_out[3]
+read_data_out[4] <= dual_port_memory:dpm.read_data_out[4]
+read_data_out[5] <= dual_port_memory:dpm.read_data_out[5]
+read_data_out[6] <= dual_port_memory:dpm.read_data_out[6]
+read_data_out[7] <= dual_port_memory:dpm.read_data_out[7]
+
+
+|async_fifo|fifo_control:fwc
+clk => ~NO_FANOUT~
+reset => ~NO_FANOUT~
+enable => ~NO_FANOUT~
+sync => ~NO_FANOUT~
+pointer <= pointer.DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[0] <= fifo_occu[0].DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[1] <= fifo_occu[1].DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[2] <= fifo_occu[2].DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[3] <= fifo_occu[3].DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[4] <= fifo_occu[4].DB_MAX_OUTPUT_PORT_TYPE
+flag <= flag.DB_MAX_OUTPUT_PORT_TYPE
+address[0] <= address[0].DB_MAX_OUTPUT_PORT_TYPE
+address[1] <= address[1].DB_MAX_OUTPUT_PORT_TYPE
+address[2] <= address[2].DB_MAX_OUTPUT_PORT_TYPE
+address[3] <= address[3].DB_MAX_OUTPUT_PORT_TYPE
+address[4] <= address[4].DB_MAX_OUTPUT_PORT_TYPE
+en <= comb.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|async_fifo|fifo_control:frc
+clk => ~NO_FANOUT~
+reset => ~NO_FANOUT~
+enable => ~NO_FANOUT~
+sync => ~NO_FANOUT~
+pointer <= pointer.DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[0] <= fifo_occu[0].DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[1] <= fifo_occu[1].DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[2] <= fifo_occu[2].DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[3] <= fifo_occu[3].DB_MAX_OUTPUT_PORT_TYPE
+fifo_occu[4] <= fifo_occu[4].DB_MAX_OUTPUT_PORT_TYPE
+flag <= flag.DB_MAX_OUTPUT_PORT_TYPE
+address[0] <= address[0].DB_MAX_OUTPUT_PORT_TYPE
+address[1] <= address[1].DB_MAX_OUTPUT_PORT_TYPE
+address[2] <= address[2].DB_MAX_OUTPUT_PORT_TYPE
+address[3] <= address[3].DB_MAX_OUTPUT_PORT_TYPE
+address[4] <= address[4].DB_MAX_OUTPUT_PORT_TYPE
+en <= comb.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|async_fifo|sync_control:ws
+clk => ~NO_FANOUT~
+ptr => ~NO_FANOUT~
+sync <= comb.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|async_fifo|sync_control:rs
+clk => ~NO_FANOUT~
+ptr => ~NO_FANOUT~
+sync <= comb.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|async_fifo|dual_port_memory:dpm
+wclk => ~NO_FANOUT~
+rclk => ~NO_FANOUT~
+raddr[0] => ~NO_FANOUT~
+raddr[1] => ~NO_FANOUT~
+raddr[2] => ~NO_FANOUT~
+raddr[3] => ~NO_FANOUT~
+raddr[4] => ~NO_FANOUT~
+ren => ~NO_FANOUT~
+waddr[0] => ~NO_FANOUT~
+waddr[1] => ~NO_FANOUT~
+waddr[2] => ~NO_FANOUT~
+waddr[3] => ~NO_FANOUT~
+waddr[4] => ~NO_FANOUT~
+wen => ~NO_FANOUT~
+write_data_in[0] => ~NO_FANOUT~
+write_data_in[1] => ~NO_FANOUT~
+write_data_in[2] => ~NO_FANOUT~
+write_data_in[3] => ~NO_FANOUT~
+write_data_in[4] => ~NO_FANOUT~
+write_data_in[5] => ~NO_FANOUT~
+write_data_in[6] => ~NO_FANOUT~
+write_data_in[7] => ~NO_FANOUT~
+read_data_out[0] <= comb.DB_MAX_OUTPUT_PORT_TYPE
+read_data_out[1] <= read_data_out[1].DB_MAX_OUTPUT_PORT_TYPE
+read_data_out[2] <= read_data_out[2].DB_MAX_OUTPUT_PORT_TYPE
+read_data_out[3] <= read_data_out[3].DB_MAX_OUTPUT_PORT_TYPE
+read_data_out[4] <= read_data_out[4].DB_MAX_OUTPUT_PORT_TYPE
+read_data_out[5] <= read_data_out[5].DB_MAX_OUTPUT_PORT_TYPE
+read_data_out[6] <= read_data_out[6].DB_MAX_OUTPUT_PORT_TYPE
+read_data_out[7] <= read_data_out[7].DB_MAX_OUTPUT_PORT_TYPE
+
+

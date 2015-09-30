@@ -1,3 +1,7 @@
 src/*.cf
 src/*.o
 src/fcs_check_serial
+src/**/*.bak
+src/**/*.cnf.*
+src/**/*.done
+src/**/*.map.*

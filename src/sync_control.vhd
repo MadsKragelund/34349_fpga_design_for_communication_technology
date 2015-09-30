@@ -8,10 +8,11 @@ entity sync_control is
 	port(
 		clk	: in std_logic;
 		ptr	: in std_logic;
-		sync 	: out std_logic;
+		sync 	: out std_logic
 	);
 end sync_control;
 
 architecture arch of sync_control is
-  -- do something
+begin
+
 end arch;
