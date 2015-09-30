@@ -1,3 +1,6 @@
+vcom -check_synthesis ../src/fcs_check_serial.vhd
+quit -sim
+
 vlib work
 
 vcom -93 -explicit -work work ../src/fcs_check_serial_test.vhd
@@ -17,13 +20,13 @@ add wave data_in
 
 add wave -noupdate -divider -height 32 Outputs
 add wave uut/R
-add wave uut/state
+add wave uut/T
+add wave uut/data
 add wave uut/shift_count
-add wave uut/complement_enable
 
 add wave -noupdate -divider -height 32 Outputs
 add wave fcs_error
 
-run 4850 ns
+run 5400 ns
 
-WaveRestoreZoom {0 ns} {4850 ns}
+WaveRestoreZoom {0 ns} {5400 ns}

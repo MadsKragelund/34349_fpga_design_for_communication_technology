@@ -33,15 +33,14 @@ architecture behavior of fcs_check_serial_test is
 
   -- clock period definitions
   constant clk_period      : time := 10 ns;
-  constant data_to_send_in : std_logic_vector(479 downto 0) :=
-    "0000000000010000101001000111101111101010100000000000000000010010" &
-    "0011010001010110011110001001000000001000000000000100010100000000" &
-    "0000000000101110101100111111111000000000000000001000000000010001" &
-    "0000010101000000110000001010100000000000001011001100000010101000" &
-    "0000000000000100000001000000000000000100000000000000000000011010" &
-    "0010110111101000000000000000000100000010000000110000010000000101" &
-    "0000011000000111000010000000100100001010000010110000110000001101" &
-    "00001110000011110001000000010001";
+  constant data_to_send_in : std_logic_vector(511 downto 0) :=
+    x"00_10_A4_7B_EA_80_00_12_34_56_78_90_08_00_45_00_00_2E_B3_FE_00_00_80_11" &
+    x"05_40_C0_A8_00_2C_C0_A8_00_04_04_00_04_00_00_1A_2D_E8_00_01_02_03_04_05" &
+    x"06_07_08_09_0A_0B_0C_0D_0E_0F_10_11_E6_C5_3D_B2";
+  -- '11100110'
+  -- '11000101'
+  -- '00111101'
+  -- '10110010'
 
 begin
   -- instantiate the unit under test (uut)
@@ -71,20 +70,27 @@ begin
     reset          <= '1';
     wait for clk_period;
     reset          <= '0';
-    wait for clk_period;
-    -- start the frame
-    start_of_frame <= '1';
-    wait for clk_period;
 
     -- start sending data, and indicate we are no longer at the start of the frame
-    start_of_frame <= '0';
-    for i in 0 to 479 loop
+    for i in 0 to 511 loop
+      if i = 0 then
+        start_of_frame <= '1';
+      else
+        start_of_frame <= '0';
+      end if;
+
       data_in <= data_to_send_in(i);
+
+      -- Start of last frame (32 bits)
+      if i = 479 then
+        end_of_frame <= '1';
+      else
+        end_of_frame <= '0';
+      end if;
+
       wait for clk_period;
     end loop;
 
-    -- end the frame
-    end_of_frame <= '1';
     wait;
   end process;
 
