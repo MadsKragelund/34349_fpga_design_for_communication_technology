@@ -19,10 +19,9 @@ add wave end_of_frame
 add wave data_in
 
 add wave -noupdate -divider -height 32 Outputs
-add wave uut/R
-add wave uut/T
-add wave uut/data
-add wave uut/shift_count
+add wave i_fcs_check_1/R
+add wave i_fcs_check_1/data
+add wave i_fcs_check_1/shift_count
 
 add wave -noupdate -divider -height 32 Outputs
 add wave fcs_error

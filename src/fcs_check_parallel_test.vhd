@@ -1,32 +1,31 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity fcs_check_serial_test is
-end fcs_check_serial_test;
+entity fcs_check_parallel_test is
+end fcs_check_parallel_test;
 
-architecture behavior of fcs_check_serial_test is
-
-  component fcs_check_serial
+architecture behavior of fcs_check_parallel_test is
+  component fcs_check_parallel
     port(clk            : in  std_logic;
          reset          : in  std_logic;
          start_of_frame : in  std_logic;
          end_of_frame   : in  std_logic;
-         data_in        : in  std_logic;
+         data_in        : in  std_logic_vector(7 downto 0);
          fcs_error      : out std_logic);
   end component;
 
-  -- Inputs
-  signal clk            : std_logic := '0';
-  signal reset          : std_logic := '0';
-  signal start_of_frame : std_logic := '0';
-  signal end_of_frame   : std_logic := '0';
-  signal data_in        : std_logic := '0';
+  -- Inputs.
+  signal clk            : std_logic                    := '0';
+  signal reset          : std_logic                    := '0';
+  signal start_of_frame : std_logic                    := '0';
+  signal end_of_frame   : std_logic                    := '0';
+  signal data_in        : std_logic_vector(7 downto 0) := (others => '0');
 
-  -- Outputs
+  -- Outputs.
   signal fcs_error : std_logic;
 
-  -- Clock period definitions
-  constant clk_period : time := 10 ns;
+  -- Clock period definitions.
+  constant clk_period      : time := 10 ns;
 
   -- Data to feed the FCS check entity.
   constant data_to_send_in : std_logic_vector(511 downto 0) :=
@@ -36,14 +35,13 @@ architecture behavior of fcs_check_serial_test is
 
 begin
 
-  i_fcs_check_1 : fcs_check_serial port map (
-    clk            => clk,
-    reset          => reset,
-    start_of_frame => start_of_frame,
-    end_of_frame   => end_of_frame,
-    data_in        => data_in,
-    fcs_error      => fcs_error
-    );
+  i_fcs_check_1 : fcs_check_parallel
+    port map (clk            => clk,
+              reset          => reset,
+              start_of_frame => start_of_frame,
+              end_of_frame   => end_of_frame,
+              data_in        => data_in,
+              fcs_error      => fcs_error);
 
   -- Test clock.
   clk_process : process
@@ -54,27 +52,29 @@ begin
     wait for clk_period / 2;
   end process;
 
+
   -- Stimulus process.
   stim_proc : process
   begin
-    -- Reset the state.
+    -- Reset the entity
     reset <= '1';
+
     wait for clk_period;
     reset <= '0';
 
     -- Start sending data, and indicate we are no longer at the start of the
     -- frame.
-    for i in data_to_send_in'range loop
+    for i in ((data_to_send_in'length / 8) - 1) downto 0 loop
       if i = (data_to_send_in'length - 1) then
         start_of_frame <= '1';
       else
         start_of_frame <= '0';
       end if;
 
-      data_in <= data_to_send_in(i);
+      data_in <= data_to_send_in(((i + 1) * 8 - 1) downto i * 8);
 
       -- Start of last frame (32 bits).
-      if i = 31 then
+      if i = 3 then
         end_of_frame <= '1';
       else
         end_of_frame <= '0';
@@ -83,7 +83,7 @@ begin
       wait for clk_period;
     end loop;
 
-    data_in <= '0';
+    data_in <= "00000000";
 
     wait;
   end process;

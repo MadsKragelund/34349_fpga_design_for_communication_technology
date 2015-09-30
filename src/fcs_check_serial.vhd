@@ -1,24 +1,29 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use std.textio.all;
 use ieee.numeric_std.all;
 
 entity fcs_check_serial is
-  port (clk            : in  std_logic;   -- system clock
-        reset          : in  std_logic;   -- asynchronous reset
-        start_of_frame : in  std_logic;   -- arrival of the first bit.
-        end_of_frame   : in  std_logic;   -- arrival of the first bit in FCS.
-        data_in        : in  std_logic;   -- serial input data.
-        fcs_error      : out std_logic);  -- indicates an error.
+  port (clk            : in  std_logic;
+        reset          : in  std_logic;
+        start_of_frame : in  std_logic;
+        end_of_frame   : in  std_logic;  -- Arrival of the first bit in CRC checksum.
+        data_in        : in  std_logic;
+        fcs_error      : out std_logic);
 end fcs_check_serial;
 
 architecture behavioral of fcs_check_serial is
-  signal R,T           : std_logic_vector(31 downto 0);
+  -- Remainder shift register
+  signal R           : std_logic_vector(31 downto 0);
+
   signal shift_count : unsigned(4 downto 0);
   signal data        : std_logic;
+  signal fcs_done    : std_logic;
 begin
 
-  process (shift_count, start_of_frame, data_in, clk)
+  -- Complement the first and last 32 bits of the frame by waiting for the
+  -- first and last bit of the frame or by ensuring an appropriate amount of
+  -- shifts are performed.
+  process (shift_count, start_of_frame, end_of_frame, data_in)
   begin
     data <= data_in;
 
@@ -27,24 +32,26 @@ begin
     end if;
   end process;
 
-  process(clk, reset, R, data)
+  -- Serial linear feedback shift register logic.
+  process (clk, reset)
   begin
     if reset = '1' then
       R           <= (others => '0');
-      T           <= (others => '0');
       shift_count <= (others => '0');
       fcs_error   <= '1';
     elsif rising_edge(clk) then
-      if start_of_frame = '1' then
+      if end_of_frame = '1' then
+        fcs_done <= '1';
+      end if;
+
+      if start_of_frame = '1' or end_of_frame = '1' then
         shift_count <= (others => '0');
-      elsif end_of_frame = '1' then
-        shift_count <= "00001";
       elsif shift_count < 31 then
         shift_count <= shift_count + 1;
       end if;
 
-      -- Shift R
-
+      -- Serial linear feedback shift registers:
+      --
       -- The generator polynomial is given by:
       -- 1 0000010 011000001 00011101 10110111
       -- MSB                               LSB
@@ -85,8 +92,9 @@ begin
       R(31) <= R(30);
       -- R(31) is x^32
 
-      T <= T(T'length - 2 downto 0) & data;
-
+      if R = "00000000000000000000000000000000" and fcs_done = '1' then
+        fcs_error <= '0';
+      end if;
     end if;
   end process;
 
