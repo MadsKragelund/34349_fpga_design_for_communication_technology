@@ -3,6 +3,81 @@ use ieee.std_logic_1164.all;
 use std.textio.all;
 use ieee.numeric_std.all;
 
+-- Dual port memory ENTITY
+entity dual_port_memory is
+	port(
+		wclk           : in std_logic;
+		rclk           : in std_logic;
+		raddr				: in std_logic_vector(4 downto 0);
+		ren				: in std_logic;
+		waddr				: in std_logic_vector(4 downto 0);
+		wen				: in std_logic;
+		write_data_in  : in std_logic_vector(7 downto 0);
+		read_data_out  : out std_logic_vector(7 downto 0)
+);
+end dual_port_memory;
+
+architecture arch of dual_port_memory is
+  -- do something
+end arch;
+
+
+-- SYNC ENTITY
+entity sync_control is
+	port(
+		clk	: in std_logic;
+		ptr	: in std_logic;
+		sync 	: out std_logic;
+	);
+end sync_control;
+
+architecture arch of sync_control is
+  -- do something
+end arch;
+
+
+-- FIFO Write Control ENTITY
+entity fifo_write_control is
+	port(
+		wclk 				: in std_logic; 
+		reset				: in std_logic;
+		write_enable	: in std_logic;
+		wsync				: in std_logic;
+		wptr				: out std_logic_vector(4 downto 0);
+		fifo_occu_in	: out std_logic_vector(4 downto 0);
+		full				: out std_logic;
+		waddr				: out std_logic_vector(4 downto 0);
+		wen				: out std_logic
+	);
+end fifo_write_control;
+
+architecture arch of fifo_write_control is
+  -- do something
+end arch;
+
+
+-- FIFO Read Control ENTITY
+entity fifo_read_control is
+	port(
+		rclk 				: in std_logic; 
+		reset				: in std_logic;
+		read_enable		: in std_logic;
+		rsync				: in std_logic;
+		rptr				: out std_logic_vector(4 downto 0);
+		fifo_occu_out	: out std_logic_vector(4 downto 0);
+		empty				: out std_logic;
+		raddr				: out std_logic_vector(4 downto 0);
+		ren				: out std_logic
+	);
+end fifo_read_control;
+
+architecture arch of fifo_read_control is
+  -- do something
+end arch;
+
+
+
+-- ASYNC_FIFO ENTITY
 entity async_fifo is
   port ( 
     reset          : in std_logic;
@@ -18,82 +93,72 @@ entity async_fifo is
 end async_fifo;
 
 
-architecture behavioral of async_fifo is
-  signal R, T           : std_logic_vector(31 downto 0);
-  signal shift_count : unsigned(4 downto 0);
-  signal data        : std_logic;
+architecture arch of async_fifo is
+	-- FIFO Write Control
+	component fifo_write_control is
+		port(
+			wclk 				: in std_logic; 
+			reset				: in std_logic;
+			write_enable	: in std_logic;
+			wsync				: in std_logic;
+			wptr				: out std_logic_vector(4 downto 0);
+			fifo_occu_in	: out std_logic_vector(4 downto 0);
+			full				: out std_logic;
+			waddr				: out std_logic_vector(4 downto 0);
+			wen				: out std_logic
+		);
+	end component;
+	
+	-- FIFO Read Control
+	component fifo_read_control is
+		port(
+			rclk 				: in std_logic; 
+			reset				: in std_logic;
+			read_enable		: in std_logic;
+			rsync				: in std_logic;
+			rptr				: out std_logic_vector(4 downto 0);
+			fifo_occu_out	: out std_logic_vector(4 downto 0);
+			empty				: out std_logic;
+			raddr				: out std_logic_vector(4 downto 0);
+			ren				: out std_logic
+		);
+  end component;
+	 
 begin
+	-- FIFO Write Control port mapping
+	fwc : fifo_write_control
+    port map(
+      wclk 				=> wclk,
+		reset				=> reset,
+		write_enabled	=> write_enable,
+		wsync				=> wsync
+	 );
+	 
+	-- FIFO Read Control port mapping
+	frc : fifo_read_control
+    port map(
+      rclk 				=> rclk,
+		reset				=> reset,
+		read_enabled	=> read_enable,
+		rsync				=> rsync
+	 );
+
 
   process (shift_count, start_of_frame, data_in, clk)
   begin
-    data <= data_in;
-
-    if shift_count < 31 or start_of_frame = '1' or end_of_frame = '1' then
-      data <= not data_in;
-    end if;
+    -- COMBINATORIC PROCESS
   end process;
 
   process(clk, reset, R, data)
   begin
+	 -- CLOCK PROCESS
     if reset = '1' then
-      R           <= (others => '0');
-      T           <= (others => '0');
-      shift_count <= (others => '0');
-      fcs_error   <= '1';
+      -- reset the system
     elsif rising_edge(clk) then
-      if start_of_frame = '1' then
-        shift_count <= (others => '0');
-      elsif end_of_frame = '1' then
-        shift_count <= "00001";
-      elsif shift_count < 31 then
-        shift_count <= shift_count + 1;
-      end if;
-
-      -- Shift R
-
-      -- The generator polynomial is given by:
-      -- 1 0000010 011000001 00011101 10110111
-      -- MSB                               LSB
-      R(0) <= data xor R(31);           -- x^0
-      R(1) <= R(0) xor R(31);           -- x^1
-      R(2) <= R(1) xor R(31);           -- x^2
-      R(3) <= R(2);
-      R(4) <= R(3) xor R(31);           -- x^4
-      R(5) <= R(4) xor R(31);           -- x^5
-      R(6) <= R(5);
-      R(7) <= R(6) xor R(31);           -- x^7
-
-      R(8)  <= R(7) xor R(31);          -- x^8
-      R(9)  <= R(8);
-      R(10) <= R(9) xor R(31);          -- x^10
-      R(11) <= R(10) xor R(31);         -- x^11
-      R(12) <= R(11) xor R(31);         -- x^12
-      R(13) <= R(12);
-      R(14) <= R(13);
-      R(15) <= R(14);
-
-      R(16) <= R(15) xor R(31);         -- x^16
-      R(17) <= R(16);
-      R(18) <= R(17);
-      R(19) <= R(18);
-      R(20) <= R(19);
-      R(21) <= R(20);
-      R(22) <= R(21) xor R(31);         -- x^22
-      R(23) <= R(22) xor R(31);         -- x^23
-      R(24) <= R(23);
-
-      R(25) <= R(24);
-      R(26) <= R(25) xor R(31);         -- x^26
-      R(27) <= R(26);
-      R(28) <= R(27);
-      R(29) <= R(28);
-      R(30) <= R(29);
-      R(31) <= R(30);
-      -- R(31) is x^32
-
-      T <= T(T'length - 2 downto 0) & data;
-
+      --
+	 else
+	 -- do nothing
     end if;
   end process;
 
-end behavioral;
+end arch;
