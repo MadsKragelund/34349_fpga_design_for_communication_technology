@@ -10,7 +10,7 @@ entity fifo_control is
 		reset				: in std_logic;
 		enable			: in std_logic;
 		sync				: in std_logic;
-		pointer			: out std_logic;
+		pointer			: out std_logic_vector(15 downto 0);
 		fifo_occu		: out std_logic_vector(4 downto 0);
 		flag				: out std_logic;
 		address			: out std_logic_vector(4 downto 0);

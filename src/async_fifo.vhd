@@ -27,8 +27,8 @@ architecture arch of async_fifo is
 	signal empty			 : std_logic := '0';
 	signal wen				 : std_logic := '0';
 	signal ren				 : std_logic := '0';
-	signal wptr    	    : std_logic := '0';
-	signal rptr    	    : std_logic := '0';
+	signal wptr    	    : std_logic_vector(15 downto 0);
+	signal rptr    	    : std_logic_vector(15 downto 0);
 	signal waddr   		 : std_logic_vector(4 downto 0);
 	signal raddr          : std_logic_vector(4 downto 0);
 	
@@ -39,7 +39,7 @@ architecture arch of async_fifo is
 			reset				: in std_logic;
 			enable			: in std_logic;
 			sync				: in std_logic;
-			pointer			: out std_logic;
+			pointer			: out std_logic_vector(15 downto 0);
 			fifo_occu		: out std_logic_vector(4 downto 0);
 			flag				: out std_logic;
 			address			: out std_logic_vector(4 downto 0);
@@ -51,7 +51,7 @@ architecture arch of async_fifo is
 	component sync_control is
 		port(
 			clk	: in std_logic;
-			ptr	: in std_logic;
+			ptr	: in std_logic_vector(15 downto 0);
 			sync 	: out std_logic
 		);
 	end component;
