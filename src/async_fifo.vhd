@@ -21,8 +21,8 @@ end async_fifo;
 
 architecture arch of async_fifo is
 
-	signal wsync          : std_logic := '0';
-	signal rsync          : std_logic := '0';
+	signal wptr_sync      : std_logic := '0';
+	signal rptr_sync      : std_logic := '0';
 	signal full           : std_logic := '0';
 	signal empty			 : std_logic := '0';
 	signal wen				 : std_logic := '0';
@@ -77,7 +77,7 @@ begin
 		clk 				=> wclk,
 		reset				=> reset,
 		enable			=> write_enable,
-		sync				=> wsync,
+		sync				=> wptr_sync,
 		pointer			=> wptr,
 		fifo_occu		=> fifo_occu_in,
 		flag				=> full,
@@ -91,7 +91,7 @@ begin
 		clk 				=> rclk,
 		reset				=> reset,
 		enable			=> read_enable,
-		sync				=> rsync,
+		sync				=> rptr_sync,
 		pointer			=> rptr,
 		fifo_occu		=> fifo_occu_out,
 		flag				=> empty,
@@ -104,7 +104,7 @@ begin
     port map(		
 		clk	=> wclk,
 		ptr	=> wptr,
-		sync 	=> wsync
+		sync 	=> wptr_sync
 	);
 	 
 	-- SYNC Read Control port mapping
@@ -112,7 +112,7 @@ begin
     port map(		
 		clk	=> rclk,
 		ptr	=> rptr,
-		sync 	=> rsync
+		sync 	=> rptr_sync
 	);
 	
 	-- Dual port memory port mapping
