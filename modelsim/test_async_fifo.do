@@ -1,10 +1,10 @@
-vcom -check_synthesis ../src/fcs_check_serial.vhd
+vcom -check_synthesis ../src/async_fifo.vhd
 quit -sim
 
 vlib work
 
-vcom -93 -explicit -work work ../src/fcs_check_serial_test.vhd
-vsim fcs_check_serial_test
+vcom -93 -explicit -work work ../src/async_fifo.vhd
+vsim async_fifo
 
 view structure
 view signals

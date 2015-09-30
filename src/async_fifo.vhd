@@ -3,17 +3,23 @@ use ieee.std_logic_1164.all;
 use std.textio.all;
 use ieee.numeric_std.all;
 
-entity fcs_check_serial is
-  port (clk            : in  std_logic;   -- system clock
-        reset          : in  std_logic;   -- asynchronous reset
-        start_of_frame : in  std_logic;   -- arrival of the first bit.
-        end_of_frame   : in  std_logic;   -- arrival of the first bit in FCS.
-        data_in        : in  std_logic;   -- serial input data.
-        fcs_error      : out std_logic);  -- indicates an error.
-end fcs_check_serial;
+entity async_fifo is
+  port ( 
+    reset          : in std_logic;
+    wclk           : in std_logic;
+    rclk           : in std_logic;
+    write_enable   : in std_logic;
+    read_enable    : in std_logic;
+    fifo_occu_in   : out std_logic_vector(4 downto 0);
+    fifo_occu_out  : out std_logic_vector(4 downto 0);
+    write_data_in  : in std_logic_vector(7 downto 0);
+    read_data_out  : out std_logic_vector(7 downto 0)
+  );
+end async_fifo;
 
-architecture behavioral of fcs_check_serial is
-  signal R,T           : std_logic_vector(31 downto 0);
+
+architecture behavioral of async_fifo is
+  signal R, T           : std_logic_vector(31 downto 0);
   signal shift_count : unsigned(4 downto 0);
   signal data        : std_logic;
 begin
